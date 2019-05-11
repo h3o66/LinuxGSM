@@ -514,7 +514,7 @@ elif [ "${shortname}" == "l4d2" ]; then
 	fn_default_config_remote
 	fn_set_config_vars
 	fn_list_config_locations
-elif [ "${shortname}" == "mc" ]; then
+elif [ "${shortname}" == "mc" ]||[ "${gamename}" == "PaperMC" ]; then
 	gamedirname="Minecraft"
 	array_configs+=( server.properties )
 	fn_fetch_default_config

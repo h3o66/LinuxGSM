@@ -1619,7 +1619,7 @@ elif [ "${shortname}" == "ql" ]; then
 	fn_info_config_quakelive
 elif [ "${shortname}" == "jk2" ]; then
 	fn_info_config_jk2
-elif [ "${shortname}" == "mc" ]; then
+elif [ "${shortname}" == "mc" ]||[ "${shortname}" == "pmc" ]; then
 	fn_info_config_minecraft
 elif [ "${shortname}" == "mcb" ]; then
 	fn_info_config_minecraft_bedrock
