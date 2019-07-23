@@ -128,13 +128,36 @@ fn_fetch_file(){
 		fi
 		# Trap will remove part downloaded files if canceled.
 		trap fn_fetch_trap INT
+		# set variable before the loop to prevent a error
+		local exitcode=0
 		# Larger files show a progress bar.
 		if [ "${local_filename##*.}" == "bz2" ]||[ "${local_filename##*.}" == "gz" ]||[ "${local_filename##*.}" == "zip" ]||[ "${local_filename##*.}" == "jar" ]||[ "${local_filename##*.}" == "xz" ]; then
+			remote_filesize=$(${curlpath} -sI --fail -L "${remote_fileurl}" | egrep -i "content-length" | awk '{print $2}' | egrep -o "[0-9]+" )
 			echo -en "downloading ${local_filename}..."
 			fn_sleep_time
 			echo -en "\033[1K"
-			curlcmd=$(${curlpath} --progress-bar --fail -L -o "${local_filedir}/${local_filename}" "${remote_fileurl}")
-			echo -en "downloading ${local_filename}..."
+			local skipretry=0
+			while [ ${exitcode} -ne 0 ]||[ ${skipretry} -ne 1 ]; do
+				curlout=$(${curlpath} --progress-bar --fail -w "%{http_code}" -L -o "${local_filedir}/${local_filename}" -C - "${remote_fileurl}")
+				exitcode=$?
+				# tbd: maybe check filesize and http returncode ?
+				if [ ${exitcode} -ne 0 ]; then
+					local_filesize=$(stat -c '%s' "${local_filedir}/${local_filename}")
+					if [ ${local_filesize} -lt ${remote_filesize} ];then
+						# ask if the download should be retried
+						echo -en "Do you want to try to continue the download ? "
+						fn_prompt_yn "Y" "Y"
+						if [ $? -ne 0 ]; then
+							skipretry=1
+						fi
+					else
+						skipretry=1
+					fi
+				else
+					skipretry=1
+				fi
+			done
+			echo -en "downloaded ${local_filename}..."
 		else
 			echo -en "    fetching ${local_filename}...\c"
 			curlcmd=$(${curlpath} -s --fail -L -o "${local_filedir}/${local_filename}" "${remote_fileurl}" 2>&1)
