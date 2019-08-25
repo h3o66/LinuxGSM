@@ -144,6 +144,18 @@ fn_set_dst_config_vars(){
 	echo ""
 }
 
+# $1 varname for config
+fn_add_inst_config_var_pwd(){
+	random=$(tr -dc A-Za-z0-9_ < /dev/urandom | head -c 8 | xargs)
+	rconpass="admin${random}"
+	instancecfg="${configdirserver}/${servicename}.cfg"
+	configvar="$1"
+	if ! egrep -q "^${configvar}=" "${instancecfg}"
+	then
+		echo "${configvar}=${rconpass}" >> "${instancecfg}"
+	fi
+}
+
 if [ "${gamename}" == "7 Days To Die" ]; then
 	gamedirname="7DaysToDie"
 	fn_default_config_local
