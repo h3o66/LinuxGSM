@@ -446,6 +446,40 @@ fn_update_function(){
 
 }
 
+# Function to download lastest github release
+# $1 github user / organisation
+# $2 repo name
+# $3 destination for download
+# $4 search string in releases (needed if there are more files that can be downloaded from the release pages)
+fn_dl_latest_release_github(){
+	local github_release_user="${1}"
+	local github_release_repo="${2}"
+	local github_release_downloadpath="${3}"
+	local github_release_search="${4}"
+
+	github_latest_release_url="https://api.github.com/repos/${github_release_user}/${github_release_repo}/releases/latest"
+
+	# get last github release
+	# if no search for the release filename is set, just get the first file from the latest release
+	if [ -z "${github_release_search}" ]; then
+		github_release_assets=$(curl -s ${github_latest_release_url} | jq '[ .assets[] ]' )
+	else
+		github_release_assets=$(curl -s "${github_latest_release_url}" | jq "[ .assets[]|select(.browser_download_url | contains(\"${github_release_search}\")) ]" )
+	fi
+
+	# check how many releases we got from the api and exit if we have more then one
+	if [ $(echo -e "${github_release_assets}" | jq '. | length' ) -gt 1 ]; then
+		fn_print_error_nl "Found more than one release to download - Please report this to the github issue tracker"
+	fi
+
+	# set variables for download via fn_fetch_file
+	github_release_filename=$( echo -e "${github_release_assets}" | jq -r '.[]name' )
+        github_release_download_link=$( echo -e "${github_release_assets}" | jq -r '.[]browser_download_url' )
+
+	# fetch file from the remote location from the exiting function to the ${tmpdir} for now
+	fn_fetch_file "${github_release_download_link}" "" "${github_release_filename}" "" "${github_release_downloadpath}" "${github_release_filename}"
+}
+
 # Check that curl is installed
 if [ ! "$(command -v curl 2>/dev/null)" ]; then
 	echo -e "[ FAIL ] Curl is not installed"
