@@ -53,6 +53,8 @@ if [ "${commandname}" != "INSTALL" ]&&[ -z "${fixbypass}" ]; then
 		fix_hw.sh
 	elif [ "${shortname}" == "ins" ]; then
 		fix_ins.sh
+	elif [ "${shortname}" == "mind" ]; then
+		fix_mind.sh
 	elif [ "${shortname}" == "nmrih" ]; then
 		fix_nmrih.sh
 	elif [ "${shortname}" == "onset" ]; then

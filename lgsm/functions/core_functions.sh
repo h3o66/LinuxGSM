@@ -391,6 +391,11 @@ functionfile="${FUNCNAME[0]}"
 fn_fetch_function
 }
 
+fix_mind.sh(){
+functionfile="${FUNCNAME[0]}"
+fn_fetch_function
+}
+
 fix_mta.sh(){
 functionfile="${FUNCNAME[0]}"
 fn_fetch_function
