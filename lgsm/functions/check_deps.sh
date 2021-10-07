@@ -329,7 +329,10 @@ if [ -f "${datadir}/${distroid}-${distroversioncsv}.csv" ]; then
 	# Generate array of missing deps.
 	array_deps_missing=()
 
-	array_deps_required=("${depall} ${depsteamcmd} ${depshortname}")
+	array_deps_required=("${depall} ${depshortname}")
+	if [ -n "${appid}" ]; then
+		array_deps_required+=("${depsteamcmd}")	
+	fi
 	array_deps_required_steamcmd=("${depsteamcmd}")
 	fn_deps_email
 	# Unique sort dependency array.
