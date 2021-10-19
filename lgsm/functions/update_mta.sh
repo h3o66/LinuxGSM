@@ -99,10 +99,8 @@ fn_update_mta_localbuild(){
 
 fn_update_mta_remotebuild(){
 	# Gets remote build info.
-	majorversion=$(curl -s https://raw.githubusercontent.com/multitheftauto/mtasa-blue/master/Server/version.h | grep "#define MTASA_VERSION_MAJOR" | awk '{ print $3 }' | sed 's/\r//g')
-	minorversion=$(curl -s https://raw.githubusercontent.com/multitheftauto/mtasa-blue/master/Server/version.h | grep "#define MTASA_VERSION_MINOR" | awk '{ print $3 }' | sed 's/\r//g')
-	maintenanceversion=$(curl -s https://raw.githubusercontent.com/multitheftauto/mtasa-blue/master/Server/version.h | grep "#define MTASA_VERSION_MAINTENANCE" | awk '{ print $3 }' | sed 's/\r//g')
-	remotebuild="${majorversion}.${minorversion}.${maintenanceversion}"
+	fn_github_get_latest_release_version "multitheftauto" "mtasa-blue"
+	remotebuild="${githubreleaseversion}"
 	if [ "${firstcommandname}" != "INSTALL" ]; then
 		fn_print_dots "Checking remote build: ${remotelocation}"
 		# Checks if remotebuild variable has been set.
@@ -190,6 +188,7 @@ fn_update_mta_compare(){
 	fi
 }
 
+core_github.sh
 # The location where the builds are checked and downloaded.
 remotelocation="linux.mtasa.com"
 
