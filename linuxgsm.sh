@@ -20,6 +20,8 @@ if [ -f ".dev-debug" ]; then
 	else
 		exec 5> dev-debug.log
 	fi
+	# Redirect stderr to debug log
+	exec 2>&5
 	BASH_XTRACEFD="5"
 	set -x
 fi
