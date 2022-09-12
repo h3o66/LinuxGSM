@@ -15,5 +15,5 @@ if [ "${postinstall}" == "1" ]; then
 	fn_sleep_time
 	# go to the executeable dir and start the init of the server
 	cd "${systemdir}" || return 2
-	"${executabledir}/${executable}" ${startparameters}
+	"${serverfiles}/${executable}" ${startparameters}
 fi
