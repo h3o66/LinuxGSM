@@ -93,7 +93,7 @@ fn_info_game_quakec() {
 	# { s/.*  *"\?\([^"]*\)"\?/\1/p;q }: Command block executed for lines that match the pattern.
 	#   - s/.*  *"\?\([^"]*\)"\?/\1/: Matches and captures the value after any number of spaces, possibly surrounded by optional double quotes.
 	#     - .*: Matches any characters before the spaces.
-	#     -   *: Matches any number of spaces.
+	#     -  \s*: Matches any number of spaces.
 	#     - "\?: Matches an optional double quote.
 	#     - \([^"]*\): Captures any characters that are not double quotes.
 	#     - "\?: Matches an optional double quote.
@@ -106,7 +106,7 @@ fn_info_game_quakec() {
 	else
 		servercfgparse="${servercfgfullpath}"
 	fi
-	eval "${1}=\"$(sed -n '/[[:space:]]\<'"${2}"'\>/ { s/.*  *\"\?\([^"]*\)\"\?/\1/p;q }' "${servercfgparse}" | tr -d '\r')\""
+	eval "${1}=\"$(sed -n '/[[:space:]]\<'"${2}"'\>/ { s/.* \s*\"\?\([^"]*\)\"\?/\1/p;q }' "${servercfgparse}" | tr -d '\r')\""
 	configtype="quakec"
 }
 
